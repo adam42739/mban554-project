@@ -41,8 +41,8 @@ def expected_drive_points(plays: pandas.DataFrame):
 
     seaborn.barplot(f10, x=pbp.cols.Yardline100.header, y="drive_points", errorbar=None)
     plt.title("Expected Drive Points by Starting Field Position")
-    plt.xlabel("Expected Points")
-    plt.ylabel("Points Scored")
+    plt.xlabel("Yards to Goal")
+    plt.ylabel("Expected Points")
     plt.xticks(ticks=range(0, 100, 10), labels=range(0, 100, 10))
     plt.savefig("figs/points_by_field_position")
     plt.show()
