@@ -3,6 +3,7 @@ import nfldpw.pbp.cols as cols
 import matplotlib.pyplot as plt
 import seaborn
 import pandas
+import json
 
 
 CACHE = "cache/"
@@ -59,6 +60,22 @@ def plot_data(df: pandas.DataFrame):
     plt.show()
 
 
+SAVES = "saves/"
+
+
+def save_data(df: pandas.DataFrame):
+    """
+    Save the group by data in JSON format in the SAVES directory.
+    """
+    gb = df.groupby(by=[cols.Yardline100.header]).mean()
+    gb_dict = {}
+    for key in gb.index.values:
+        gb_dict[key] = float(gb[gb.index == key].values[0][0])
+    with open(SAVES + "punt_yards.json", "w") as file:
+        json.dump(gb_dict, file)
+
+
 df = pbp.get(YEARS, CACHE)
 df = punts(df)
+save_data(df)
 plot_data(df)
