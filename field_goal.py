@@ -3,6 +3,7 @@ import nfldpw.pbp.cols as cols
 import matplotlib.pyplot as plt
 import seaborn
 import pandas
+import json
 
 
 CACHE = "cache/"
@@ -33,6 +34,9 @@ YEARS = [
 
 
 def field_goals(df: pandas.DataFrame) -> pandas.DataFrame:
+    """
+    Get only plays that resulted in a field goal and create a binary variable for if the field goal was made.
+    """
     fgs = df[cols.PlayType.header] == cols.PlayType.FIELD_GOAL
     df["fg_made"] = df[cols.FieldGoalResult.header] == cols.FieldGoalResult.MADE
     df = df[fgs]
@@ -58,6 +62,22 @@ def plot_data(df: pandas.DataFrame):
     plt.show()
 
 
+SAVES = "saves/"
+
+
+def save_data(df: pandas.DataFrame):
+    """
+    Save the group by data in JSON format in the SAVES directory.
+    """
+    gb = df.groupby(by=[cols.Yardline100.header]).mean()
+    gb_dict = {}
+    for key in gb.index.values:
+        gb_dict[key] = float(gb[gb.index == key].values[0][0])
+    with open(SAVES + "field_goal.json", "w") as file:
+        json.dump(gb_dict, file)
+
+
 df = pbp.get(YEARS, CACHE)
 df = field_goals(df)
+save_data(df)
 plot_data(df)
