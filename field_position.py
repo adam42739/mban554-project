@@ -3,9 +3,34 @@ import nfldpw.pbp.cols as cols
 import matplotlib.pyplot as plt
 import seaborn
 import pandas
+from matplotlib.ticker import FuncFormatter
 
 
 CACHE = "cache/"
+YEARS = [
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+]
 
 
 def first_drive(df: pandas.DataFrame) -> pandas.DataFrame:
@@ -47,17 +72,24 @@ def compute_drive_points(df: pandas.DataFrame) -> pandas.DataFrame:
     return df[[cols.Yardline100.header, "drive_points"]]
 
 
+def formatter(x, tick):
+    if x % 10 == 0:
+        return f"{int(x)}"
+    else:
+        return ""
+
+
 def plot_data(df: pandas.DataFrame):
     seaborn.barplot(df, x=cols.Yardline100.header, y="drive_points", errorbar=None)
     plt.title("Expected Drive Points by Starting Field Position")
     plt.xlabel("Yards to Goal")
     plt.ylabel("Expected Points")
-    plt.xticks(ticks=range(0, 100, 10), labels=range(0, 100, 10))
+    plt.gca().xaxis.set_major_formatter(FuncFormatter(formatter))
     plt.savefig("figs/points_by_field_position")
     plt.show()
 
 
-df = pbp.get([2021, 2022, 2023], CACHE)
+df = pbp.get(YEARS, CACHE)
 df = first_drive(df)
 df = compute_drive_points(df)
 plot_data(df)
