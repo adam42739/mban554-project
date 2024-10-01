@@ -3,7 +3,6 @@ import nfldpw.pbp.cols as cols
 import matplotlib.pyplot as plt
 import seaborn
 import pandas
-from matplotlib.ticker import FuncFormatter
 
 
 CACHE = "cache/"
@@ -41,19 +40,20 @@ def field_goals(df: pandas.DataFrame) -> pandas.DataFrame:
     return df
 
 
-def formatter(x, tick):
-    if x % 10 == 9 or x == 0:
-        return f"{int(x+1)}"
+def formatter(label):
+    label = int(float(label))
+    if label % 10 == 0:
+        return f"{int(label)}"
     else:
         return ""
 
 
 def plot_data(df: pandas.DataFrame):
-    seaborn.barplot(df, x=cols.Yardline100.header, y="fg_made", errorbar=None)
+    ax = seaborn.barplot(df, x=cols.Yardline100.header, y="fg_made", errorbar=None)
     plt.title("Field Goal Probability by Yards")
     plt.xlabel("Yards to Goal")
     plt.ylabel("Field Goal Probability")
-    plt.gca().xaxis.set_major_formatter(FuncFormatter(formatter))
+    ax.set_xticklabels([formatter(label.get_text()) for label in ax.get_xticklabels()])
     plt.savefig("figs/field_goal")
     plt.show()
 

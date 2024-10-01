@@ -3,7 +3,6 @@ import nfldpw.pbp.cols as cols
 import matplotlib.pyplot as plt
 import seaborn
 import pandas
-from matplotlib.ticker import FuncFormatter
 
 
 CACHE = "cache/"
@@ -57,20 +56,23 @@ def fourth_agg_ten(df: pandas.DataFrame) -> pandas.DataFrame:
     return df
 
 
-def formatter(x, tick):
-    if x == 14:
+def formatter(label):
+    label = int(float(label))
+    if label == 15:
         return "15+"
     else:
-        return f"{int(x+1)}"
+        return f"{int(label)}"
 
 
 def plot_data(df: pandas.DataFrame):
-    seaborn.barplot(df, x=cols.Ydstogo.header, y=cols.FirstDown.header, errorbar=None)
+    ax = seaborn.barplot(
+        df, x=cols.Ydstogo.header, y=cols.FirstDown.header, errorbar=None
+    )
     plt.title("Probability of a 4th Down Conversion")
     plt.xlabel("Yards to go")
     plt.ylabel("Conversion Probability")
     plt.xlim(-0.8, 14.8)
-    plt.gca().xaxis.set_major_formatter(FuncFormatter(formatter))
+    ax.set_xticklabels([formatter(label.get_text()) for label in ax.get_xticklabels()])
     plt.savefig("figs/fourth_convert")
     plt.show()
 

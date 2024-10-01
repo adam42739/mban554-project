@@ -3,7 +3,6 @@ import nfldpw.pbp.cols as cols
 import matplotlib.pyplot as plt
 import seaborn
 import pandas
-from matplotlib.ticker import FuncFormatter
 
 
 CACHE = "cache/"
@@ -72,19 +71,20 @@ def compute_drive_points(df: pandas.DataFrame) -> pandas.DataFrame:
     return df[[cols.Yardline100.header, "drive_points"]]
 
 
-def formatter(x, tick):
-    if x % 10 == 9 or x == 0:
-        return f"{int(x+1)}"
+def formatter(label):
+    label = int(float(label))
+    if label % 10 == 0:
+        return f"{int(label)}"
     else:
         return ""
 
 
 def plot_data(df: pandas.DataFrame):
-    seaborn.barplot(df, x=cols.Yardline100.header, y="drive_points", errorbar=None)
+    ax = seaborn.barplot(df, x=cols.Yardline100.header, y="drive_points", errorbar=None)
     plt.title("Expected Drive Points by Starting Field Position")
     plt.xlabel("Yards to Goal")
     plt.ylabel("Expected Points")
-    plt.gca().xaxis.set_major_formatter(FuncFormatter(formatter))
+    ax.set_xticklabels([formatter(label.get_text()) for label in ax.get_xticklabels()])
     plt.savefig("figs/points_by_field_position")
     plt.show()
 

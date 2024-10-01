@@ -3,7 +3,6 @@ import nfldpw.pbp.cols as cols
 import matplotlib.pyplot as plt
 import seaborn
 import pandas
-from matplotlib.ticker import FuncFormatter
 
 
 CACHE = "cache/"
