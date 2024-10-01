@@ -73,8 +73,8 @@ def compute_drive_points(df: pandas.DataFrame) -> pandas.DataFrame:
 
 
 def formatter(x, tick):
-    if x % 10 == 0:
-        return f"{int(x)}"
+    if x % 10 == 9 or x == 0:
+        return f"{int(x+1)}"
     else:
         return ""
 
