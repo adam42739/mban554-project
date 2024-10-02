@@ -42,25 +42,28 @@ def plot_data(data: numpy.ndarray):
     ax.set_yticklabels(
         [formatter_y(label.get_text()) for label in ax.get_yticklabels()]
     )
-    plt.title("Field Goal + Opponent Next Drive Expected Points")
+    plt.title("Punt + Opponent Next Drive Expected Points")
     plt.xlabel("Yards to Goalline")
     plt.ylabel("Yards to 1st Down")
-    plt.savefig("figs/fg_ep")
+    plt.savefig("figs/punt_ep")
     plt.show()
 
 
-def ep_senario(fg_prob: dict, posit_ep: dict, yardline: int, ydstogo: int) -> float:
+def ep_senario(punt_yards: dict, posit_ep: dict, yardline: int, ydstogo: int) -> float:
     key = str(yardline) + ".0"
-    opp_key = str(100 - yardline) + ".0"
-    if key in fg_prob:
-        return 3 * fg_prob[key] - posit_ep[opp_key] * (1 - fg_prob[key])
+    if key in punt_yards:
+        start_yard = str(round(100 - (yardline - punt_yards[key]))) + ".0"
+        if start_yard == "100.0":
+            start_yard = "99.0"
+        return -posit_ep[start_yard]
     else:
-        return -posit_ep[opp_key]
+        key = "99.0"
+        return -posit_ep[key]
 
 
-def load_data_fg() -> dict:
+def load_data_punt() -> dict:
     gb_dict = {}
-    with open("saves/field_goal.json", "r") as file:
+    with open("saves/punt_yards.json", "r") as file:
         gb_dict = json.load(file)
     return gb_dict
 
@@ -73,12 +76,12 @@ def load_data_field_pos() -> dict:
 
 
 def create_data() -> numpy.ndarray:
-    fg_prob = load_data_fg()
+    punt_yards = load_data_punt()
     posit_ep = load_data_field_pos()
     data = numpy.random.rand(15, 98)
     for togo in range(0, 15):
         for ydline in range(0, 98):
-            data[togo][ydline] = ep_senario(fg_prob, posit_ep, ydline + 1, togo + 1)
+            data[togo][ydline] = ep_senario(punt_yards, posit_ep, ydline + 1, togo + 1)
     return data
 
 
