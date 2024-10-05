@@ -1,9 +1,9 @@
 import nfldpw.pbp as pbp
 import nfldpw.pbp.cols as cols
 import matplotlib.pyplot as plt
-import seaborn
+from matplotlib.patches import Circle
 import pandas
-import json
+import numpy
 
 
 CACHE = "cache/"
@@ -39,21 +39,11 @@ FOURTH_GO_FOR_IT = [cols.PlayType.PASS, cols.PlayType.RUN]
 def fourth(df: pandas.DataFrame) -> pandas.DataFrame:
     df = df[df[cols.Down.header] == 4]
     df["went_for_it"] = df[cols.PlayType.header].isin(FOURTH_GO_FOR_IT)
-    df = df[[cols.Season.header, "went_for_it"]]
-    df = df.groupby(by=[cols.Season.header]).mean()
+    df = df[[cols.PossessionTeam.header, "went_for_it"]]
+    df = df.groupby(by=[cols.PossessionTeam.header]).mean()
     return df
 
 
-def plot_data(df: pandas.DataFrame):
-    seaborn.barplot(df, x=cols.Season.header, y="went_for_it", errorbar=None)
-    plt.title("Probability of Going for it by Year")
-    plt.xlabel("Year")
-    plt.ylabel("Probability")
-    plt.xticks(rotation=45)
-    plt.savefig("figs/forth_growth", bbox_inches="tight", dpi=300)
-    plt.show()
-
-
-df = pbp.get(YEARS, CACHE)
+df = pbp.get([2023], CACHE)
 df = fourth(df)
-plot_data(df)
+df.to_csv("saves/fourth_team.csv")
