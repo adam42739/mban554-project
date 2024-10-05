@@ -83,7 +83,7 @@ def formatter(label):
 def plot_data(df: pandas.DataFrame):
     ax = seaborn.barplot(df, x=cols.Yardline100.header, y="drive_points", errorbar=None)
     plt.title("Expected Drive Points by Starting Field Position")
-    plt.xlabel("Yards to Goal")
+    plt.xlabel("Yards to Goalline")
     plt.ylabel("Expected Points")
     ax.set_xticklabels([formatter(label.get_text()) for label in ax.get_xticklabels()])
     plt.savefig("figs/points_by_field_position")

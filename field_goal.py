@@ -55,7 +55,7 @@ def formatter(label):
 def plot_data(df: pandas.DataFrame):
     ax = seaborn.barplot(df, x=cols.Yardline100.header, y="fg_made", errorbar=None)
     plt.title("Field Goal Probability by Yards")
-    plt.xlabel("Yards to Goal")
+    plt.xlabel("Yards to Goalline")
     plt.ylabel("Field Goal Probability")
     ax.set_xticklabels([formatter(label.get_text()) for label in ax.get_xticklabels()])
     plt.savefig("figs/field_goal")
